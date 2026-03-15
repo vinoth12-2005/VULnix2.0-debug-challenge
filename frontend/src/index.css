@@ -432,3 +432,31 @@
 .tilt-card:hover {
   transform: scale(1.02) rotateX(2deg) rotateY(2deg);
 }
+
+/* ========== PERFORMANCE OPTIMIZATIONS ========== */
+/* Disable heavy animations & full screen layered effects on mobile */
+@media (max-width: 768px) {
+  .animate-brightness-flicker,
+  .animate-lightning,
+  .animate-glitch,
+  .animate-holographic::after {
+    animation: none !important;
+    filter: none !important;
+  }
+  
+  .noise-overlay,
+  .cyber-grid,
+  .scanline,
+  .data-stream {
+    display: none !important;
+    animation: none !important;
+  }
+  
+  /* Reduce glow intensity on mobile to save paint performance */
+  .text-glow-gold,
+  .text-glow-red,
+  .hover-glow-gold:hover {
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+}
