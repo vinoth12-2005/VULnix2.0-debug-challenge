@@ -1,0 +1,458 @@
+const pool = require('./database');
+const bcrypt = require('bcryptjs');
+
+async function seed() {
+  try {
+    console.log('🌱 Seeding database...');
+
+    // Clear old data
+    await pool.query('SET FOREIGN_KEY_CHECKS = 0');
+    await pool.query('TRUNCATE TABLE submissions');
+    await pool.query('TRUNCATE TABLE team_timers');
+    await pool.query('TRUNCATE TABLE problems');
+    await pool.query('TRUNCATE TABLE scores');
+    await pool.query('TRUNCATE TABLE teams');
+    await pool.query('SET FOREIGN_KEY_CHECKS = 1');
+
+    // Seed teams
+    const teams = ['Team Alpha', 'Team Beta', 'Team Gamma', 'Team Delta', 'Team Epsilon'];
+    for (const team of teams) {
+      await pool.execute('INSERT IGNORE INTO teams (team_name) VALUES (?)', [team]);
+      const [rows] = await pool.execute('SELECT id FROM teams WHERE team_name = ?', [team]);
+      if (rows.length > 0) {
+        await pool.execute(
+          'INSERT IGNORE INTO scores (team_id, total_points, challenges_completed) VALUES (?, 0, 0)',
+          [rows[0].id]
+        );
+      }
+    }
+    console.log('✅ Teams seeded');
+
+    // Seed admin
+    const hash = await bcrypt.hash('admin123', 10);
+    await pool.execute(
+      'INSERT IGNORE INTO admins (username, password_hash) VALUES (?, ?)',
+      ['admin', hash]
+    );
+    console.log('✅ Admin seeded (user: admin, pass: admin123)');
+
+    // ============================================================
+    // PROBLEMS
+    // chapter 1 = Easy, chapter 2 = Medium, chapter 3 = Hard
+    // round = sequential index within that chapter/language group
+    // ============================================================
+    const problems = [
+
+      // ──────────────────────────────────────────
+      // CHAPTER 1: EASY
+      // ──────────────────────────────────────────
+
+      // Python – Easy – Round 1
+      {
+        chapter: 1, round: 1, difficulty: 'easy', language: 'python', points: 10,
+        title: 'Add Two Numbers',
+        description: 'Fix the bugs so the program correctly adds two numbers entered by the user.',
+        buggy_code:
+`def add(a, b)
+    result = a - b
+    return result
+
+x = input("Enter first number:")
+y = input("Enter second number:")
+
+print("Sum is:", add(x, y))`,
+        hint: 'Function definition syntax error; Wrong arithmetic operator; Input datatype issue',
+        expected_output: 'Enter first number: 5\nEnter second number: 3\nSum is: 8',
+      },
+
+      // Python – Easy – Round 2
+      {
+        chapter: 1, round: 2, difficulty: 'easy', language: 'python', points: 10,
+        title: 'Print Numbers from 1 to N',
+        description: 'Fix the code so it prints numbers from 1 to N.',
+        buggy_code:
+`def print_numbers(n):
+    for i in range(1,n)
+    print(i)
+
+num = input("Enter number:")
+print_numbers(num)`,
+        hint: 'Missing colon in loop; Input datatype issue; Range should include final number',
+        expected_output: 'Enter number: 5\n1\n2\n3\n4\n5',
+      },
+
+      // Java – Easy – Round 1
+      {
+        chapter: 1, round: 1, difficulty: 'easy', language: 'java', points: 10,
+        title: 'Multiply Two Numbers',
+        description: 'Fix the code so it multiplies two numbers.',
+        buggy_code:
+`public class Main {
+    public static void main(String args[]) {
+        int a = 5
+        int b = 4;
+        int result = a + b;
+
+        System.out.println("Result: " + result)
+    }
+}`,
+        hint: 'Missing semicolon; Wrong arithmetic operator; Print statement syntax',
+        expected_output: 'Result: 20',
+      },
+
+      // Java – Easy – Round 2
+      {
+        chapter: 1, round: 2, difficulty: 'easy', language: 'java', points: 10,
+        title: 'Print Hello 5 Times',
+        description: 'Fix the program so it prints Hello five times.',
+        buggy_code:
+`public class Main {
+    public static void main(String[] args) {
+        for(int i=1; i<=5; i--) {
+            System.out.println("Hello")
+        }
+    }
+}`,
+        hint: 'Wrong loop increment; Missing semicolon; Infinite loop risk',
+        expected_output: 'Hello\nHello\nHello\nHello\nHello',
+      },
+
+      // C – Easy – Round 1
+      {
+        chapter: 1, round: 1, difficulty: 'easy', language: 'c', points: 10,
+        title: 'Square of a Number',
+        description: 'Fix the program to print the square of a number.',
+        buggy_code:
+`#include <stdio.h>
+
+int main() {
+    int n = 5
+    int square = n ^ 2;
+
+    printf("Square: %d", square)
+}`,
+        hint: 'Missing semicolon; Wrong operator for square; Missing return statement',
+        expected_output: 'Square: 25',
+      },
+
+      // C – Easy – Round 2
+      {
+        chapter: 1, round: 2, difficulty: 'easy', language: 'c', points: 10,
+        title: 'Sum of Two Numbers',
+        description: 'Fix the program to correctly compute the sum.',
+        buggy_code:
+`#include <stdio.h>
+
+int main() {
+    int a = 10;
+    int b = 20;
+    int sum;
+
+    sum = a - b
+
+    printf("Sum = %d\\n", sum);
+}`,
+        hint: 'Wrong arithmetic operator; Missing semicolon; Logic issue',
+        expected_output: 'Sum = 30',
+      },
+
+      // ──────────────────────────────────────────
+      // CHAPTER 2: MEDIUM
+      // ──────────────────────────────────────────
+
+      // Python – Medium – Round 1
+      {
+        chapter: 2, round: 1, difficulty: 'medium', language: 'python', points: 20,
+        title: 'Factorial Calculation',
+        description: 'Fix the bugs so the program correctly computes the factorial of 5.',
+        buggy_code:
+`def factorial(n):
+    fact = 0
+    for i in range(1, n):
+        fact = fact * i
+    return fact
+
+print(factorial(5))`,
+        hint: 'Initial value incorrect; Range should include n; Multiplication logic issue',
+        expected_output: '120',
+      },
+
+      // Python – Medium – Round 2
+      {
+        chapter: 2, round: 2, difficulty: 'medium', language: 'python', points: 20,
+        title: 'Print Even Numbers',
+        description: 'Fix the code so it prints all even numbers from 2 to 10.',
+        buggy_code:
+`def print_even(n):
+    for i in range(n):
+        if i % 2 = 0:
+            print(i)
+
+print_even("10")`,
+        hint: 'Comparison operator error; Datatype issue; Range start problem',
+        expected_output: '2\n4\n6\n8\n10',
+      },
+
+      // Java – Medium – Round 1
+      {
+        chapter: 2, round: 1, difficulty: 'medium', language: 'java', points: 20,
+        title: 'Reverse a Number',
+        description: 'Fix the code so it reverses the digits of 123 to produce 321.',
+        buggy_code:
+`public class Main {
+    public static void main(String[] args) {
+        int num = 123;
+        int rev = 0;
+
+        while(num > 0) {
+            int rem = num % 10
+            rev = rev + rem;
+            num = num / 10;
+        }
+
+        System.out.println(rev);
+    }
+}`,
+        hint: 'Missing semicolon; Reverse logic incorrect; Multiplication missing',
+        expected_output: '321',
+      },
+
+      // Java – Medium – Round 2
+      {
+        chapter: 2, round: 2, difficulty: 'medium', language: 'java', points: 20,
+        title: 'Sum of Array',
+        description: 'Fix the code so it computes the sum of the array elements correctly.',
+        buggy_code:
+`public class Main {
+    public static void main(String[] args) {
+        int arr[] = {1,2,3,4,5};
+        int sum = 0;
+
+        for(int i=0;i<=arr.length;i++){
+            sum = sum + arr[i];
+        }
+
+        System.out.println("Sum = " + sum)
+    }
+}`,
+        hint: 'Array index limit issue; Loop condition error; Missing semicolon',
+        expected_output: 'Sum = 15',
+      },
+
+      // C – Medium – Round 1
+      {
+        chapter: 2, round: 1, difficulty: 'medium', language: 'c', points: 20,
+        title: 'Largest of Three Numbers',
+        description: 'Fix the program so it correctly identifies the largest of three numbers.',
+        buggy_code:
+`#include<stdio.h>
+
+int main() {
+    int a = 5, b = 8, c = 3;
+    int largest;
+
+    if(a>b && a>c)
+        largest = b;
+    else if(b>a && b>c)
+        largest = c;
+    else
+        largest = a;
+
+    printf("%d",largest);
+}`,
+        hint: 'Logic error in assignments; Wrong values assigned; Condition issue',
+        expected_output: '8',
+      },
+
+      // C – Medium – Round 2
+      {
+        chapter: 2, round: 2, difficulty: 'medium', language: 'c', points: 20,
+        title: 'Count Digits',
+        description: 'Fix the program so it correctly counts the number of digits in 12345.',
+        buggy_code:
+`#include<stdio.h>
+
+int main() {
+    int n = 12345;
+    int count = 1;
+
+    while(n > 0)
+    {
+        count++;
+        n = n/10;
+    }
+
+    printf("Digits = %d",count);
+}`,
+        hint: 'Initial value incorrect; Off-by-one error; Loop logic issue',
+        expected_output: 'Digits = 5',
+      },
+
+      // ──────────────────────────────────────────
+      // CHAPTER 3: HARD
+      // ──────────────────────────────────────────
+
+      // Python – Hard – Round 1
+      {
+        chapter: 3, round: 1, difficulty: 'hard', language: 'python', points: 30,
+        title: 'Prime Number Check',
+        description: 'Fix the bugs so the program correctly checks whether an input number is prime.',
+        buggy_code:
+`def is_prime(n)
+    if n <= 1:
+        return True
+
+    for i in range(2,n):
+        if n % i == 0
+            return False
+        else:
+            return True
+
+num = input("Enter number:")
+if is_prime(num):
+    print("Prime")
+else
+    print("Not Prime")`,
+        hint: 'Missing colon; Input datatype issue; Loop logic incorrect; Prime condition wrong; Syntax error in else',
+        expected_output: 'Enter number: 7\nPrime',
+      },
+
+      // Python – Hard – Round 2
+      {
+        chapter: 3, round: 2, difficulty: 'hard', language: 'python', points: 30,
+        title: 'Sum of List',
+        description: 'Fix the bugs so the program correctly sums a list of numbers and prints the total.',
+        buggy_code:
+`numbers = [1,2,3,4,5]
+total = 0
+
+for i in range(len(numbers)+1):
+    total = numbers[i]
+
+print("Total:", total)`,
+        hint: 'Index overflow; Accumulation logic wrong; Variable name mismatch; Range issue; Avoid overwriting built-in sum',
+        expected_output: 'Total: 15',
+      },
+
+      // Java – Hard – Round 1
+      {
+        chapter: 3, round: 1, difficulty: 'hard', language: 'java', points: 30,
+        title: 'Fibonacci Series',
+        description: 'Fix the bugs so the program prints the first 7 Fibonacci numbers.',
+        buggy_code:
+`public class Main {
+    public static void main(String[] args) {
+
+        int n = 7
+        int a = 0, b = 1;
+
+        for(int i=0;i<n;i++);
+        {
+            int c = a + b;
+            System.out.println(c)
+            a = b;
+            b = c;
+        }
+    }
+}`,
+        hint: 'Missing semicolon; Extra semicolon in loop; Print statement syntax; Fibonacci logic error; Loop issue',
+        expected_output: '1\n1\n2\n3\n5\n8\n13',
+      },
+
+      // Java – Hard – Round 2
+      {
+        chapter: 3, round: 2, difficulty: 'hard', language: 'java', points: 30,
+        title: 'Maximum in Array',
+        description: 'Fix the bugs so the program correctly finds the maximum value in an array.',
+        buggy_code:
+`public class Main {
+    public static void main(String[] args) {
+
+        int arr[] = {2,9,4,7,5};
+        int max = 0;
+
+        for(int i=1;i<arr.length;i++)
+        {
+            if(arr[i] < max)
+                max = arr[i]
+        }
+
+        System.out.println("Max = " + max);
+    }
+}`,
+        hint: 'Initial value problem; Comparison operator wrong; Missing semicolon; Loop logic issue; Incorrect max logic',
+        expected_output: 'Max = 9',
+      },
+
+      // C – Hard – Round 1
+      {
+        chapter: 3, round: 1, difficulty: 'hard', language: 'c', points: 30,
+        title: 'Reverse Number',
+        description: 'Fix the bugs so the program correctly reverses the digits of 1234.',
+        buggy_code:
+`#include<stdio.h>
+
+int main() {
+
+    int n = 1234
+    int rev;
+
+    while(n > 0)
+    {
+        int rem = n % 10;
+        rev = rev * 10 + rem;
+        n / 10;
+    }
+
+    printf("Reverse = %d", rev);
+
+}`,
+        hint: 'Missing semicolon; Uninitialized variable; Division assignment missing; Reverse logic; Missing return statement',
+        expected_output: 'Reverse = 4321',
+      },
+
+      // C – Hard – Round 2
+      {
+        chapter: 3, round: 2, difficulty: 'hard', language: 'c', points: 30,
+        title: 'Sum of Array',
+        description: 'Fix the bugs so the program correctly sums all elements of the array.',
+        buggy_code:
+`#include<stdio.h>
+
+int main() {
+
+    int arr[5] = {1,2,3,4,5};
+    int sum;
+
+    for(int i=0;i<=5;i++)
+    {
+        sum = arr[i];
+    }
+
+    printf("Sum = %d", sum)
+
+}`,
+        hint: 'Sum not initialized; Array index overflow; Accumulation logic wrong; Loop condition error; Missing semicolon',
+        expected_output: 'Sum = 15',
+      },
+
+    ];
+
+    for (const p of problems) {
+      await pool.execute(
+        `INSERT INTO problems (chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [p.chapter, p.round, p.difficulty, p.language, p.title, p.description, p.buggy_code, p.expected_output, p.points, p.hint]
+      );
+    }
+    console.log(`✅ ${problems.length} problems seeded (Chapter 1: Easy, Chapter 2: Medium, Chapter 3: Hard)`);
+
+    console.log('🎉 Database seeding complete!');
+    process.exit(0);
+  } catch (err) {
+    console.error('❌ Seeding error:', err);
+    process.exit(1);
+  }
+}
+
+seed();
