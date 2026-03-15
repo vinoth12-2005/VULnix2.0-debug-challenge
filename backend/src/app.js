@@ -46,7 +46,26 @@ app.use((req, res, next) => {
 });
 
 // Middleware
-app.use(cors({ origin: '*' }));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://vu-lnix2-0-debug-challenge.vercel.app',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || allowedOrigins.length === 0) {
+      return callback(null, true);
+    }
+    // In production allow all *.vercel.app subdomains
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+    return callback(null, true); // Fallback: allow all (safe for public API)
+  },
+  credentials: true,
+}));
 app.use(express.json({ limit: '1mb' })); // Restricted body size
 
 // Rate limiting

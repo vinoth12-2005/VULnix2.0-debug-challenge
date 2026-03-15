@@ -8,7 +8,7 @@ const authenticateToken = async (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'Access token required' });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'debug_arena_secret_key_2024_cyberpunk');
     req.user = decoded;
 
     if (decoded.role === 'team' && decoded.sessionToken) {

@@ -47,8 +47,8 @@ const teamLogin = async (req, res) => {
 
     const token = jwt.sign(
       { id: team.id, team_name: team.team_name, role: 'team', sessionToken },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      process.env.JWT_SECRET || 'debug_arena_secret_key_2024_cyberpunk',
+      { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
     );
 
     res.json({ token, team: { id: team.id, team_name: team.team_name }, role: 'team' });
@@ -82,8 +82,8 @@ const adminLogin = async (req, res) => {
 
     const token = jwt.sign(
       { id: admin.id, username: admin.username, role: 'admin' },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      process.env.JWT_SECRET || 'debug_arena_secret_key_2024_cyberpunk',
+      { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
     );
 
     res.json({ token, admin: { id: admin.id, username: admin.username }, role: 'admin' });
