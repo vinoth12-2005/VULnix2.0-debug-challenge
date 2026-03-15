@@ -44,10 +44,10 @@ const getSolvedProblems = async (req, res) => {
   try {
     const team_id = req.user.id;
     const [rows] = await pool.execute(
-      `SELECT DISTINCT problem_id FROM submissions WHERE team_id = ? AND result = 'correct'`,
+      `SELECT problem_id, score FROM submissions WHERE team_id = ?`,
       [team_id]
     );
-    res.json(rows.map(r => r.problem_id));
+    res.json(rows);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

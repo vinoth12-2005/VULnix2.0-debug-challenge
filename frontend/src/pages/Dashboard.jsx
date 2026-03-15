@@ -24,7 +24,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState({ points: 0, completed: 0, rank: '-' });
   const [problems, setProblems] = useState([]);
-  const [solvedIds, setSolvedIds] = useState([]);
+  const [solvedData, setSolvedData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function Dashboard() {
           api.get('/leaderboard'),
         ]);
         setProblems(probsRes.data);
-        setSolvedIds(solvedRes.data);
+        setSolvedData(solvedRes.data);
         const myRank = lbRes.data.find(t => t.id === user.id);
         if (myRank) {
           setStats({ points: myRank.total_points, completed: myRank.challenges_completed, rank: myRank.rank_pos });
@@ -176,7 +176,9 @@ export default function Dashboard() {
                       {/* Language Cards */}
                       <div className="space-y-3">
                         {sorted.map(p => {
-                          const solved = solvedIds.includes(p.id);
+                          const solvedEntry = solvedData.find(s => s.problem_id === p.id);
+                          const solved = !!solvedEntry;
+                          const scoreEarned = solvedEntry ? solvedEntry.score : 0;
                           const isLocked = user.role !== 'admin' && p.locked;
                           const isSealed = user.role !== 'admin' && p.sealed;
                           const langColor = LANG_COLORS[p.language] || 'gray-400';
@@ -207,7 +209,13 @@ export default function Dashboard() {
                                     {p.language}
                                   </div>
                                   <div className={`text-sm font-body ${solved ? 'text-myth-jade/80' : 'text-gray-300'}`}>{p.title}</div>
-                                  <div className="text-[10px] text-gray-600 font-body mt-0.5">{p.points} pts</div>
+                                  <div className="text-[10px] text-gray-600 font-body mt-0.5">
+                                    {solved ? (
+                                      <span className="text-myth-jade">{scoreEarned} / {p.points} pts</span>
+                                    ) : (
+                                      <span>{p.points} pts</span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
 

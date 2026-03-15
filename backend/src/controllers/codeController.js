@@ -186,13 +186,28 @@ const submitCode = async (req, res) => {
       normOut(execResult.output) === normOut(problem.expected_output);
 
     const isCorrect = diffAllFixed || outputCorrect;
-    const score = 0;
+    const bugsFixed = isCorrect ? totalBugs : Math.min(totalBugs, linesFixed);
+    const score = Math.floor((bugsFixed / totalBugs) * problem.points);
     const resultStr = isCorrect ? 'correct' : (execResult.error ? 'error' : 'incorrect');
 
     // Save submission
     await pool.execute(
       'INSERT INTO submissions (team_id, problem_id, code, result, score, execution_time) VALUES (?, ?, ?, ?, ?, ?)',
       [team_id, problem_id, code, resultStr, score, execResult.executionTime]
+    );
+
+    // Recalculate team's total points and challenges completed
+    const [newScores] = await pool.execute(
+      `SELECT SUM(score) as total_points, COUNT(DISTINCT problem_id) as challenges_completed
+       FROM submissions WHERE team_id = ?`,
+      [team_id]
+    );
+
+    const { total_points, challenges_completed } = newScores[0];
+
+    await pool.execute(
+      'UPDATE scores SET total_points = ?, challenges_completed = ? WHERE team_id = ?',
+      [total_points || 0, challenges_completed || 0, team_id]
     );
 
     res.json({
