@@ -6,7 +6,7 @@ frontend/node_modules/
 # Environment variables (NEVER commit these)
 .env
 backend/.env
-frontend/.env
+# frontend/.env is intentionally committed (contains no secrets, only /api URL)
 
 # Build output
 frontend/dist/
