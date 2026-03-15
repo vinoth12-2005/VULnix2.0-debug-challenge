@@ -37,9 +37,9 @@ function App() {
         <div className="cyber-grid" />
         
         {/* Ambient Glowing Orbs */}
-        <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-[rgba(139,0,0,0.15)] rounded-full blur-[100px] animate-breathe pointer-events-none -z-10" />
-        <div className="fixed bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[rgba(212,175,55,0.1)] rounded-full blur-[120px] animate-drift pointer-events-none -z-10" />
-        <div className="fixed top-3/4 left-1/2 -translate-x-1/2 w-64 h-64 bg-[rgba(139,0,0,0.1)] rounded-full blur-[80px] animate-pulse pointer-events-none -z-10" />
+        <div style={{ position: 'fixed', top: '25%', left: '25%', width: '24rem', height: '24rem', background: 'rgba(139,0,0,0.15)', borderRadius: '50%', filter: 'blur(100px)', animation: 'breathe 4s ease-in-out infinite', pointerEvents: 'none', zIndex: -10 }} />
+        <div style={{ position: 'fixed', bottom: '25%', right: '25%', width: '31rem', height: '31rem', background: 'rgba(212,175,55,0.1)', borderRadius: '50%', filter: 'blur(120px)', animation: 'drift 6s ease-in-out infinite', pointerEvents: 'none', zIndex: -10 }} />
+        <div style={{ position: 'fixed', top: '75%', left: '50%', transform: 'translateX(-50%)', width: '16rem', height: '16rem', background: 'rgba(139,0,0,0.1)', borderRadius: '50%', filter: 'blur(80px)', animation: 'pulse 3s ease-in-out infinite', pointerEvents: 'none', zIndex: -10 }} />
 
         <div className="relative z-10 w-full min-h-screen">
           <AppRoutes />
