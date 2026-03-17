@@ -1,6 +1,8 @@
 const mysql = require('mysql2/promise');
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../../backend/.env') });
+
+// In cloud environments (Railway/Vercel), env vars are usually pre-injected.
+// Local dotenv is already loaded in server.js or api/index.js.
+require('dotenv').config(); 
 
 const isRemoteDB = !['localhost', '127.0.0.1', '::1'].includes(process.env.DB_HOST || 'localhost');
 
