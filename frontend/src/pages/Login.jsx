@@ -94,9 +94,10 @@ export default function Login() {
       } else if (!err.response) {
         setError('Network Error: Cannot reach the backend. check Vercel Variables.');
       } else if (typeof err.response.data === 'string' && err.response.data.includes('<!DOCTYPE html>')) {
-        setError('Critical: Server is Offline or Misconfigured (Vercel crashed).');
+        setError(`Status ${err.response.status}: Server HTML Error (Vercel crash).`);
       } else {
-        setError(err.response?.data?.message || 'Divine connection failed. Manual Intervention Required.');
+        const serverMsg = err.response?.data?.message || err.response?.data?.error?.message || JSON.stringify(err.response?.data).substring(0, 50);
+        setError(`Dev Status ${err.response.status}: ${serverMsg}`);
       }
     } finally {
       setLoading(false);
