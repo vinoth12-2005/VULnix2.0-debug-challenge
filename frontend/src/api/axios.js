@@ -1,16 +1,36 @@
 import axios from 'axios';
 
-// In local dev use localhost backend; in production (Vercel) use relative /api
-// Prioritize VITE_API_URL from environment; fallback to localhost in dev or relative /api in prod
-const baseURL = import.meta.env.VITE_API_URL 
-  || (typeof window !== 'undefined' && window.location.hostname === 'localhost' 
-      ? 'http://localhost:5000/api' 
-      : '/api');
+const isLocalhost = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const envURL = import.meta.env.VITE_API_URL;
+
+// Determine final base URL
+let baseURL = envURL;
+
+if (!isLocalhost && envURL && envURL.includes('localhost')) {
+  // If we are on a REAL domain but the env var says 'localhost', 
+  // it means the build baked in a local .env file. Fallback to /api.
+  baseURL = '/api';
+} else if (!baseURL) {
+  baseURL = isLocalhost ? 'http://localhost:5000/api' : '/api';
+}
+
+// Auto-upgrade to HTTPS if the main site is secure
+if (typeof window !== 'undefined' && window.location.protocol === 'https:' && baseURL.startsWith('http:')) {
+  if (!baseURL.includes('localhost')) {
+    baseURL = baseURL.replace('http:', 'https:');
+  }
+}
 
 const api = axios.create({
   baseURL,
   timeout: 60000,
 });
+
+if (isLocalhost) {
+  console.log('📡 API BaseURL:', baseURL);
+}
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');

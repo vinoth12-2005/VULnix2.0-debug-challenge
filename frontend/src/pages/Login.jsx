@@ -84,7 +84,14 @@ export default function Login() {
       }
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Connection error.');
+      console.error('Login detailed error:', err);
+      if (err.code === 'ECONNABORTED') {
+        setError('Server is taking too long to respond. Trial timed out.');
+      } else if (!err.response) {
+        setError('Network Error. Ensure VITE_API_URL is correct and the server is running.');
+      } else {
+        setError(err.response?.data?.message || 'Divine connection failed. Server error.');
+      }
     } finally {
       setLoading(false);
     }
