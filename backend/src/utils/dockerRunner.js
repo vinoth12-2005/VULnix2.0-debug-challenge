@@ -4,8 +4,8 @@ const fs = require('fs');
 const os = require('os');
 const { randomUUID } = require('crypto');
 
-const FILE_NAMES   = { python: 'solution.py', java: 'Main.java', c: 'solution.c' };
-const DOCKER_IMAGES = { python: 'python:3.11-alpine', java: 'openjdk:17-alpine', c: 'gcc:latest' };
+const FILE_NAMES   = { python: 'solution.py', java: 'Main.java', c: 'solution.c', cpp: 'solution.cpp' };
+const DOCKER_IMAGES = { python: 'python:3.11-alpine', java: 'openjdk:17-alpine', c: 'gcc:latest', cpp: 'gcc:latest' };
 
 // Build the shell command for a given language
 function buildCmd(language, tmpDir, useDocker) {
@@ -13,6 +13,7 @@ function buildCmd(language, tmpDir, useDocker) {
     python: 'python3 solution.py',
     java:   'javac Main.java && java -cp . Main',
     c:      'gcc solution.c -o solution && ./solution',
+    cpp:    'g++ solution.cpp -o solution && ./solution',
   };
   const runCmd = runCmds[language];
 

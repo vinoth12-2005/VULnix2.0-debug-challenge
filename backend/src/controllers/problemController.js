@@ -1,16 +1,32 @@
 const pool = require('../config/database');
 
+let problemsCache = { data: null, lastFetch: 0 };
+const CACHE_TTL = 30000; // 30 seconds for static problem data
+
 const getProblems = async (req, res) => {
   try {
     const { chapter, round, difficulty, language } = req.query;
-    let query = 'SELECT * FROM problems WHERE 1=1';
-    const params = [];
-    if (chapter) { query += ' AND chapter = ?'; params.push(chapter); }
-    if (round) { query += ' AND round = ?'; params.push(round); }
-    if (difficulty) { query += ' AND difficulty = ?'; params.push(difficulty); }
-    if (language) { query += ' AND language = ?'; params.push(language); }
-    query += ' ORDER BY chapter, round, difficulty, language';
-    const [problems] = await pool.execute(query, params);
+    
+    // In-memory cache for the full list (admins only or base for teams)
+    const now = Date.now();
+    let problems;
+    
+    if (problemsCache.data && (now - problemsCache.lastFetch < CACHE_TTL)) {
+      problems = JSON.parse(JSON.stringify(problemsCache.data)); // Deep clone to avoid mutating cache
+    } else {
+      let query = 'SELECT * FROM problems WHERE 1=1';
+      const [rows] = await pool.execute(query);
+      problems = rows;
+      problemsCache = { data: rows, lastFetch: now };
+    }
+
+    // Apply filters from query
+    if (chapter) problems = problems.filter(p => p.chapter == chapter);
+    if (round) problems = problems.filter(p => p.round == round);
+    if (difficulty) problems = problems.filter(p => p.difficulty == difficulty);
+    if (language) problems = problems.filter(p => p.language == language);
+    
+    problems.sort((a, b) => (a.chapter - b.chapter) || (a.round - b.round));
 
     // If regular team is fetching, determine what is locked
     if (req.user.role !== 'admin') {
@@ -156,6 +172,17 @@ const getProblemById = async (req, res) => {
       }
     }
 
+    // Return sibling problems (same group_id, other languages) for language tabs
+    if (problem.problem_group_id) {
+      const [siblings] = await pool.execute(
+        'SELECT id, language, title FROM problems WHERE problem_group_id = ? AND id != ?',
+        [problem.problem_group_id, problem.id]
+      );
+      problem.group_siblings = siblings;
+    } else {
+      problem.group_siblings = [];
+    }
+
     res.json(problem);
   } catch (err) {
     console.error('getProblemById error:', err);
@@ -165,10 +192,10 @@ const getProblemById = async (req, res) => {
 
 const createProblem = async (req, res) => {
   try {
-    const { chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint, time_limit } = req.body;
+    const { chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint, time_limit, problem_group_id } = req.body;
     const [result] = await pool.execute(
-      'INSERT INTO problems (chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint, time_limit) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [chapter || 1, round || 1, difficulty, language, title, description, buggy_code, expected_output, points || 10, hint || null, time_limit || 0]
+      'INSERT INTO problems (chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint, time_limit, problem_group_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [chapter || 1, round || 1, difficulty, language, title, description, buggy_code, expected_output, points || 10, hint || null, time_limit || 0, problem_group_id || null]
     );
     res.status(201).json({ message: 'Problem created', id: result.insertId });
   } catch (err) {
@@ -178,10 +205,10 @@ const createProblem = async (req, res) => {
 
 const updateProblem = async (req, res) => {
   try {
-    const { chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint, time_limit } = req.body;
+    const { chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint, time_limit, problem_group_id } = req.body;
     await pool.execute(
-      'UPDATE problems SET chapter=?, round=?, difficulty=?, language=?, title=?, description=?, buggy_code=?, expected_output=?, points=?, hint=?, time_limit=? WHERE id=?',
-      [chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint || null, time_limit || 0, req.params.id]
+      'UPDATE problems SET chapter=?, round=?, difficulty=?, language=?, title=?, description=?, buggy_code=?, expected_output=?, points=?, hint=?, time_limit=?, problem_group_id=? WHERE id=?',
+      [chapter, round, difficulty, language, title, description, buggy_code, expected_output, points, hint || null, time_limit || 0, problem_group_id || null, req.params.id]
     );
     res.json({ message: 'Problem updated' });
   } catch (err) {

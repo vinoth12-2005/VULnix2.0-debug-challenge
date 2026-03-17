@@ -1,0 +1,48 @@
+
+> debug-arena@1.0.0 dev
+> concurrently "npm run dev --prefix backend" "npm run dev --prefix frontend"
+
+[0] 
+[0] > backend@1.0.0 dev
+[0] > nodemon src/server.js
+[0] 
+[1] 
+[1] > frontend@0.0.0 dev
+[1] > vite --host
+[1] 
+[0] [33m[nodemon] 3.1.14[39m
+[0] [33m[nodemon] to restart at any time, enter `rs`[39m
+[0] [33m[nodemon] watching path(s): *.*[39m
+[0] [33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[0] [32m[nodemon] starting `node src/server.js`[39m
+[1] 
+[1]   VITE v5.4.21  ready in 331 ms
+[1] 
+[1]   ➜  Local:   http://localhost:5173/
+[1]   ➜  Network: http://10.248.31.58:5173/
+[0] [dotenv@17.3.1] injecting env (9) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[0] [dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[0] [dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[0] [dotenv@17.3.1] injecting env (0) from .env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[0] [dotenv@17.3.1] injecting env (0) from .env -- tip: 🛡️ auth for agents: https://vestauth.com
+[0] [32m[nodemon] restarting child process[39m
+[1] npm run dev --prefix frontend exited with code SIGHUP
+[0] [32m[nodemon] starting `node src/server.js`[39m
+[0] [dotenv@17.3.1] injecting env (9) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[0] [dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+[0] [dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[0] [dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+[0] [dotenv@17.3.1] injecting env (0) from .env -- tip: 🛡️ auth for agents: https://vestauth.com
+[0] npm run dev --prefix backend exited with code SIGHUP
+Node.js[25398]: ../src/node.cc:701:void node::ResetStdio(): Assertion `!(err != 0) || (err == -1 && (*__errno_location ()) == 1)' failed.
+ 1: 0x78cc80e0633c node::Abort() [/lib/x86_64-linux-gnu/libnode.so.109]
+ 2: 0x78cc80e063cb  [/lib/x86_64-linux-gnu/libnode.so.109]
+ 3: 0x78cc80db88c6  [/lib/x86_64-linux-gnu/libnode.so.109]
+ 4: 0x78cc80047a76  [/lib/x86_64-linux-gnu/libc.so.6]
+ 5: 0x78cc80047bbe  [/lib/x86_64-linux-gnu/libc.so.6]
+ 6: 0x78cc80d2dc5d node::DefaultProcessExitHandler(node::Environment*, int) [/lib/x86_64-linux-gnu/libnode.so.109]
+ 7: 0x78cc80d7e729 node::Environment::Exit(int) [/lib/x86_64-linux-gnu/libnode.so.109]
+ 8: 0x78cc8125138e v8::internal::FunctionCallbackArguments::Call(v8::internal::CallHandlerInfo) [/lib/x86_64-linux-gnu/libnode.so.109]
+ 9: 0x78cc812519b1  [/lib/x86_64-linux-gnu/libnode.so.109]
+10: 0x78cc812522af v8::internal::Builtin_HandleApiCall(int, unsigned long*, v8::internal::Isolate*) [/lib/x86_64-linux-gnu/libnode.so.109]
+11: 0x78cc810fc2f9  [/lib/x86_64-linux-gnu/libnode.so.109]

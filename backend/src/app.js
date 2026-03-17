@@ -10,10 +10,13 @@ const problemRoutes = require('./routes/problems');
 const codeRoutes = require('./routes/code');
 const leaderboardRoutes = require('./routes/leaderboard');
 const submissionRoutes = require('./routes/submissions');
+const compression = require('compression');
 const adminRoutes = require('./routes/admin');
+const antiCheatRoutes = require('./routes/anticheat');
 const helmet = require('helmet');
 
 const app = express();
+app.use(compression()); // Compress all responses
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
@@ -91,6 +94,7 @@ app.use('/api/code', codeRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/anticheat', antiCheatRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));

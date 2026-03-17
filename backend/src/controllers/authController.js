@@ -40,6 +40,18 @@ const teamLogin = async (req, res) => {
     );
 
     const sessionToken = crypto.randomBytes(32).toString('hex');
+
+    // Log MULTI_LOGIN_KICK if another session was active
+    if (team.session_token && team.session_token !== sessionToken) {
+      try {
+        await pool.execute(
+          'INSERT INTO anti_cheat_events (team_id, session_id, event_type, metadata) VALUES (?, ?, ?, ?)',
+          [team.id, team.session_token, 'MULTI_LOGIN_KICK',
+           JSON.stringify({ ip: req.ip, user_agent: req.get('User-Agent') || 'unknown' })]
+        );
+      } catch (_) { /* table may not exist yet on first run */ }
+    }
+
     await pool.execute(
       'UPDATE teams SET session_token = ? WHERE id = ?',
       [sessionToken, team.id]

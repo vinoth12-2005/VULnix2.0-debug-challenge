@@ -78,3 +78,16 @@ CREATE TABLE IF NOT EXISTS team_timers (
   FOREIGN KEY (problem_id) REFERENCES problems(id) ON DELETE CASCADE,
   UNIQUE KEY unique_team_problem (team_id, problem_id)
 );
+-- Anti-cheat events table
+CREATE TABLE IF NOT EXISTS anti_cheat_events (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  team_id INT NOT NULL,
+  session_id VARCHAR(255),
+  event_type VARCHAR(50) NOT NULL,
+  metadata JSON,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+);
+
+-- Seed initial setting if not exists
+INSERT IGNORE INTO settings (id, leaderboard_released) VALUES (1, false);

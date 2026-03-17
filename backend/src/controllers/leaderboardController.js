@@ -1,7 +1,15 @@
 const pool = require('../config/database');
 
+let leaderboardCache = { data: null, lastFetch: 0 };
+const CACHE_TTL = 5000; // 5 seconds
+
 const getLeaderboard = async (req, res) => {
   try {
+    const now = Date.now();
+    if (leaderboardCache.data && (now - leaderboardCache.lastFetch < CACHE_TTL)) {
+      return res.json(leaderboardCache.data);
+    }
+
     const [settings] = await pool.execute('SELECT leaderboard_released FROM settings LIMIT 1');
     const isReleased = settings.length > 0 && settings[0].leaderboard_released;
 
@@ -15,7 +23,9 @@ const getLeaderboard = async (req, res) => {
          ORDER BY rank_pos`
       );
     }
-    res.json({ released: !!isReleased, data: rows });
+    const response = { released: !!isReleased, data: rows };
+    leaderboardCache = { data: response, lastFetch: now };
+    res.json(response);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

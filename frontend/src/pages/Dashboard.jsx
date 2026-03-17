@@ -85,13 +85,13 @@ export default function Dashboard() {
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 border-b border-myth-gold/30 pb-6 relative z-10 animate-slide-up">
         <div>
-          <h1 className="text-3xl font-myth font-bold text-gray-200 tracking-widest leading-none group">
-            <span className="text-myth-gold">VULNI</span><span className="text-myth-red group-hover:animate-glitch">X</span>{' '}
-            <span className="text-myth-gold/70 text-lg">2.0</span>
+          <h1 className="text-3xl font-myth font-bold text-white tracking-widest leading-none group">
+            <span className="text-myth-gold text-glow-gold">VULNI</span><span className="text-myth-red text-glow-red group-hover:animate-glitch">X</span>{' '}
+            <span className="text-myth-gold text-lg">2.0</span>
           </h1>
-          <p className="text-gray-400 font-body text-xs uppercase tracking-wider mt-1">
-            Reincarnation: <span className="text-myth-jade">Active</span> // Deity:{' '}
-            <span className="text-myth-gold">{user.team_name || user.username}</span>
+          <p className="text-gray-200 font-body text-xs uppercase tracking-wider mt-1">
+            Reincarnation: <span className="text-myth-jade shadow-myth-jade">Active</span> // Deity:{' '}
+            <span className="text-myth-gold font-bold">{user.team_name || user.username}</span>
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -116,10 +116,10 @@ export default function Dashboard() {
           { label: 'Spiritual Merit', value: stats.points, border: 'myth-red' },
           { label: 'Demons Vanquished', value: `${user.role !== 'admin' ? stats.completed : 0} / ${problems.length}`, border: 'gray-800' },
         ].map((s, i) => (
-          <div key={i} className={`bg-myth-dark border border-${s.border}/20 rounded p-6 relative overflow-hidden group hover-lift hover-glow-gold animate-slide-up`} style={{ animationDelay: `${0.1 + i * 0.15}s`, animationFillMode: 'backwards' }}>
-            <div className={`absolute inset-0 bg-${s.border}/5 w-0 group-hover:w-full transition-all duration-500 ease-out`}></div>
-            <div className={`text-${s.border}/60 text-xs font-bold uppercase tracking-widest mb-1 font-myth`}>{s.label}</div>
-            <div className="text-5xl font-myth text-gray-200 text-glow-gold">{s.value}</div>
+          <div key={i} className={`bg-myth-dark border border-${s.border}/40 rounded p-6 relative overflow-hidden group hover-lift hover-glow-gold animate-slide-up shadow-xl`} style={{ animationDelay: `${0.1 + i * 0.15}s`, animationFillMode: 'backwards' }}>
+            <div className={`absolute inset-0 bg-${s.border}/10 w-0 group-hover:w-full transition-all duration-500 ease-out`}></div>
+            <div className={`text-${s.border} text-xs font-bold uppercase tracking-widest mb-1 font-myth`}>{s.label}</div>
+            <div className="text-5xl font-myth text-white text-glow-gold">{s.value}</div>
           </div>
         ))}
       </div>
@@ -139,8 +139,8 @@ export default function Dashboard() {
                 <div className="h-px bg-gradient-to-r from-transparent via-myth-gold/40 to-transparent flex-1"></div>
                 <div className="text-center">
                   <h2 className="text-3xl font-myth tracking-[0.5em] text-myth-gold text-glow-gold uppercase">{theme.label}</h2>
-                  <div className="text-[10px] text-myth-gold/50 font-myth tracking-[0.3em] mt-1">{theme.subtitle}</div>
-                  <div className="text-[9px] text-myth-red/60 font-body tracking-[0.4em] mt-0.5 border border-myth-red/20 rounded px-2 py-0.5 inline-block">{theme.tag}</div>
+                  <div className="text-[10px] text-myth-gold/80 font-myth tracking-[0.3em] mt-1">{theme.subtitle}</div>
+                  <div className="text-[9px] text-myth-red/90 font-body tracking-[0.4em] mt-0.5 border border-myth-red/40 rounded px-2 py-0.5 inline-block bg-myth-red/10">{theme.tag}</div>
                 </div>
                 <div className="h-px bg-gradient-to-r from-transparent via-myth-gold/40 to-transparent flex-1"></div>
               </div>
@@ -167,8 +167,8 @@ export default function Dashboard() {
                           {roundNum}
                         </div>
                         <div>
-                          <div className="text-myth-gold font-myth tracking-widest uppercase text-sm">{roundLabel}</div>
-                          <div className="text-[9px] text-gray-600 font-body tracking-wider uppercase">Round {roundNum} · {sorted.length} Languages</div>
+                          <div className="text-myth-gold font-myth tracking-widest uppercase text-sm text-glow-gold font-bold">{roundLabel}</div>
+                          <div className="text-[9px] text-gray-400 font-body tracking-wider uppercase font-bold">Round {roundNum} · {sorted.length} Languages</div>
                         </div>
                         <div className="h-px bg-gradient-to-r from-myth-gold/30 to-transparent flex-1"></div>
                       </div>
@@ -183,20 +183,83 @@ export default function Dashboard() {
                           const isSealed = user.role !== 'admin' && p.sealed;
                           const langColor = LANG_COLORS[p.language] || 'gray-400';
 
+                          if (isLocked) {
+                            // Blurred card with lock overlay for locked challenges
+                            return (
+                              <div
+                                key={p.id}
+                                className="relative rounded-lg overflow-hidden"
+                              >
+                                {/* Blurred content underneath */}
+                                <div
+                                  className="w-full flex items-center justify-between p-4 rounded-lg border border-dashed border-gray-700 bg-myth-dark text-left select-none"
+                                  style={{ filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none' }}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg border border-${langColor}/30 bg-${langColor}/10 flex-shrink-0`}>
+                                      {LANG_ICONS[p.language]}
+                                    </div>
+                                    <div>
+                                      <div className={`text-xs font-bold uppercase tracking-widest font-myth text-${langColor} brightness-150`}>
+                                        {p.language}
+                                      </div>
+                                      <div className="text-sm font-body text-gray-100">{p.title}</div>
+                                      <div className="text-[10px] text-gray-400 font-body mt-0.5">
+                                        <span>{p.points} pts</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                                    <span className="text-[9px] text-gray-600">LOCKED</span>
+                                  </div>
+                                </div>
+
+                                {/* Lock overlay */}
+                                <div
+                                  className="absolute inset-0 flex flex-col items-center justify-center rounded-lg cursor-not-allowed"
+                                  style={{ background: 'rgba(0,0,0,0.45)' }}
+                                >
+                                  <div
+                                    className="flex flex-col items-center gap-1"
+                                    style={{
+                                      filter: 'drop-shadow(0 0 12px rgba(212,175,55,0.6))',
+                                    }}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 24 24"
+                                      fill="currentColor"
+                                      className="w-8 h-8 text-myth-gold"
+                                      style={{ filter: 'drop-shadow(0 0 8px rgba(212,175,55,0.8))' }}
+                                    >
+                                      <path
+                                        fillRule="evenodd"
+                                        d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z"
+                                        clipRule="evenodd"
+                                      />
+                                    </svg>
+                                    <span
+                                      className="text-[9px] font-myth font-bold tracking-[0.3em] uppercase"
+                                      style={{ color: '#d4af37', textShadow: '0 0 8px rgba(212,175,55,0.8)' }}
+                                    >
+                                      LOCKED
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+
                           return (
                             <button
                               key={p.id}
-                              onClick={() => !isLocked && navigate(`/challenge/${p.id}`)}
-                              disabled={isLocked}
-                              className={`w-full flex items-center justify-between p-4 rounded-lg border text-left transition-all duration-300 group/btn
-                                ${isLocked ? 'opacity-30 cursor-not-allowed border-dashed border-gray-800 bg-myth-dark' : 'hover-lift cursor-pointer'}
+                              onClick={() => navigate(`/challenge/${p.id}`)}
+                              className={`w-full flex items-center justify-between p-4 rounded-lg border text-left transition-all duration-300 group/btn hover-lift cursor-pointer
                                 ${solved
                                   ? 'bg-myth-jade/10 border-myth-jade/40 text-myth-jade'
                                   : isSealed
                                     ? 'bg-myth-red/10 border-myth-red/30 text-myth-red/60'
-                                    : !isLocked
-                                      ? `bg-obsidian border-${langColor}/20 hover:border-${langColor}/60 hover:bg-${langColor}/5`
-                                      : 'text-gray-700 border-transparent'
+                                    : `bg-obsidian border-${langColor}/20 hover:border-${langColor}/60 hover:bg-${langColor}/5`
                                 }`}
                             >
                               <div className="flex items-center gap-3">
@@ -222,8 +285,7 @@ export default function Dashboard() {
                               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                                 {solved && <span className="text-[9px] bg-myth-jade/20 text-myth-jade px-2 py-0.5 rounded font-bold tracking-wider border border-myth-jade/30">✓ SOLVED</span>}
                                 {isSealed && !solved && <span className="text-[9px] bg-myth-red/20 text-myth-red px-2 py-0.5 rounded font-bold tracking-wider border border-myth-red/30">SEALED</span>}
-                                {isLocked && <span className="text-[9px] text-myth-red/50">LOCKED</span>}
-                                {!solved && !isSealed && !isLocked && (
+                                {!solved && !isSealed && (
                                   <span className={`text-[9px] text-${langColor}/80 group-hover/btn:translate-x-1 transition-transform inline-block`}>→ START</span>
                                 )}
                               </div>

@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../../backend/.env') });
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isRemoteDB = !['localhost', '127.0.0.1', '::1'].includes(process.env.DB_HOST || 'localhost');
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
@@ -11,12 +11,13 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD || 'root',
   database: process.env.DB_NAME || 'railway',
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 5,
   queueLimit: 0,
+  connectTimeout: 10000,
   enableKeepAlive: true,
-  keepAliveInitialDelay: 1000,
-  // Enable SSL for cloud MySQL providers (PlanetScale, Railway, Aiven, etc.)
-  ssl: isProduction ? { rejectUnauthorized: false } : undefined,
+  keepAliveInitialDelay: 10000,
+  // Railway/cloud providers always need SSL — even in local dev when pointing at a remote host
+  ssl: isRemoteDB ? { rejectUnauthorized: false } : undefined,
 });
 
 module.exports = pool;

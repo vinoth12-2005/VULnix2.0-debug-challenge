@@ -28,7 +28,7 @@ function FloatingChar({ char, style }) {
       style={{
         ...style,
         fontSize: `${30 + Math.random() * 50}px`,
-        color: char === 'X' ? 'rgba(139, 0, 0, 0.12)' : 'rgba(212, 175, 55, 0.06)',
+        color: char === 'X' ? 'rgba(255, 42, 42, 0.15)' : 'rgba(255, 215, 0, 0.1)',
       }}
     >
       {char}
@@ -202,7 +202,7 @@ export default function Login() {
             2.0
           </h2>
           
-          <p className="mt-5 text-myth-gold/50 font-body tracking-[0.5em] text-[10px] uppercase animate-fade-delayed">
+          <p className="mt-5 text-myth-gold/80 font-body tracking-[0.5em] text-[10px] uppercase animate-fade-delayed">
             COLLEGE DEBUGGING COMPETITION
           </p>
 
@@ -238,14 +238,14 @@ export default function Login() {
           <div className="flex mb-8 border-b border-myth-darker relative">
             <button
               onClick={() => setIsAdmin(false)}
-              className={`flex-1 pb-3 text-sm font-bold tracking-wider transition-all duration-500 relative ${!isAdmin ? 'text-myth-gold text-glow-gold scale-105' : 'text-gray-600 hover:text-myth-gold/60'}`}
+              className={`flex-1 pb-3 text-sm font-bold tracking-wider transition-all duration-500 relative ${!isAdmin ? 'text-myth-gold text-glow-gold scale-105' : 'text-gray-400 hover:text-myth-gold/80'}`}
             >
               {!isAdmin && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-myth-gold animated-border"></div>}
               TEAM LOGIN
             </button>
             <button
               onClick={() => setIsAdmin(true)}
-              className={`flex-1 pb-3 text-sm font-bold tracking-wider transition-all duration-500 relative ${isAdmin ? 'text-myth-red text-glow-red scale-105' : 'text-gray-600 hover:text-myth-red/60'}`}
+              className={`flex-1 pb-3 text-sm font-bold tracking-wider transition-all duration-500 relative ${isAdmin ? 'text-myth-red text-glow-red scale-105' : 'text-gray-400 hover:text-myth-red/80'}`}
             >
               {isAdmin && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-myth-red animated-border"></div>}
               ADMIN LOGIN
@@ -275,7 +275,7 @@ export default function Login() {
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
                     autoComplete="off"
-                    className="w-full bg-myth-darker border border-myth-gold/30 rounded px-4 py-3.5 text-myth-gold focus:outline-none focus:border-myth-gold focus:shadow-myth-gold transition-all duration-300 font-body hover:border-myth-gold/50 placeholder:text-gray-700 backdrop-blur-sm"
+                    className="w-full bg-myth-darker border border-myth-gold/40 rounded px-4 py-3.5 text-myth-gold focus:outline-none focus:border-myth-gold focus:shadow-myth-gold transition-all duration-300 font-body hover:border-myth-gold/60 placeholder:text-gray-600 backdrop-blur-sm"
                     placeholder="Team Name"
                     required
                   />
@@ -291,7 +291,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="new-password"
-                    className="w-full bg-myth-darker border border-myth-gold/30 rounded px-4 py-3.5 pr-12 text-myth-gold focus:outline-none focus:border-myth-gold focus:shadow-myth-gold transition-all duration-300 font-body hover:border-myth-gold/50 placeholder:text-gray-700 backdrop-blur-sm"
+                    className="w-full bg-myth-darker border border-myth-gold/40 rounded px-4 py-3.5 pr-12 text-myth-gold focus:outline-none focus:border-myth-gold focus:shadow-myth-gold transition-all duration-300 font-body hover:border-myth-gold/60 placeholder:text-gray-600 backdrop-blur-sm"
                     placeholder="Password"
                   />
                   <button 
@@ -397,9 +397,9 @@ export default function Login() {
           {/* Bottom decorative text */}
           <div className="mt-6 animate-fade-delayed" style={{ animationDelay: '1.5s' }}>
             <div className="flex items-center justify-center gap-2">
-              <div className="w-8 h-px bg-gray-800"></div>
-              <p className="text-gray-700 text-[10px] font-body tracking-[0.3em] uppercase">VULNI<span className="text-myth-red/40">X</span> 2.0 Debug Engine</p>
-              <div className="w-8 h-px bg-gray-800"></div>
+              <div className="w-8 h-px bg-gray-700"></div>
+              <p className="text-gray-400 text-[10px] font-body tracking-[0.3em] uppercase">VULNI<span className="text-myth-red/60">X</span> 2.0 Debug Engine</p>
+              <div className="w-8 h-px bg-gray-700"></div>
             </div>
           </div>
         </div>

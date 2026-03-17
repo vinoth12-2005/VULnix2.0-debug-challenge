@@ -5,7 +5,7 @@ const runCode = async (req, res) => {
   try {
     const { language, code, problem_id } = req.body;
     if (!language || !code) return res.status(400).json({ message: 'language and code are required' });
-    if (!['python', 'java', 'c'].includes(language)) return res.status(400).json({ message: 'Unsupported language' });
+    if (!['python', 'java', 'c', 'cpp'].includes(language)) return res.status(400).json({ message: 'Unsupported language' });
 
     const result = await runInDocker(language, code);
 

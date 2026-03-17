@@ -1,0 +1,221 @@
+
+> backend@1.0.0 dev
+> nodemon src/server.js
+
+[33m[nodemon] 3.1.14[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node src/server.js`[39m
+[dotenv@17.3.1] injecting env (9) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+❌ Database init error: connect ETIMEDOUT
+🚀 Debug Arena backend running on http://localhost:5000
+📡 Socket.io ready
+Socket connected: X88naaZJ7tUoG37EAAAB
+Socket disconnected: X88naaZJ7tUoG37EAAAB
+Socket connected: lIRcxWIV_s4AwQOTAAAD
+Socket disconnected: lIRcxWIV_s4AwQOTAAAD
+Socket connected: Owqpdh1XvuhFNjWcAAAG
+Socket disconnected: Owqpdh1XvuhFNjWcAAAG
+Socket connected: GyFDu9Aw7g07UEw_AAAJ
+Socket disconnected: GyFDu9Aw7g07UEw_AAAJ
+Socket connected: Hi2Rsby8T_7U0_ixAAAM
+Socket disconnected: Hi2Rsby8T_7U0_ixAAAM
+Socket connected: VptZNay0lmjsBTrPAAAP
+Socket disconnected: VptZNay0lmjsBTrPAAAP
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getSubmissions error: Error: connect ETIMEDOUT
+    at PromisePool.execute (/home/zoro/Documents/debugging_new/backend/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at getSubmissions (/home/zoro/Documents/debugging_new/backend/src/controllers/submissionController.js:5:31)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13)
+    at requireAdmin (/home/zoro/Documents/debugging_new/backend/src/middleware/auth.js:31:3)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13)
+    at authenticateToken (/home/zoro/Documents/debugging_new/backend/src/middleware/auth.js:21:5)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13) {
+  code: 'ETIMEDOUT',
+  errno: undefined,
+  sql: undefined,
+  sqlState: undefined,
+  sqlMessage: undefined
+}
+getSubmissions error: Error: connect ETIMEDOUT
+    at PromisePool.execute (/home/zoro/Documents/debugging_new/backend/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at getSubmissions (/home/zoro/Documents/debugging_new/backend/src/controllers/submissionController.js:5:31)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13)
+    at requireAdmin (/home/zoro/Documents/debugging_new/backend/src/middleware/auth.js:31:3)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13)
+    at authenticateToken (/home/zoro/Documents/debugging_new/backend/src/middleware/auth.js:21:5)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13) {
+  code: 'ETIMEDOUT',
+  errno: undefined,
+  sql: undefined,
+  sqlState: undefined,
+  sqlMessage: undefined
+}
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+Socket connected: XxwLJ52P3NtCYM4TAAAS
+Socket disconnected: XxwLJ52P3NtCYM4TAAAS
+Socket connected: rV-XG1sHPtzDEnl9AAAV
+Socket disconnected: rV-XG1sHPtzDEnl9AAAV
+Socket connected: lcl-xqefySYct08eAAAY
+Socket disconnected: lcl-xqefySYct08eAAAY
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+Socket connected: b-dk-kCeYlyrwdtUAAAb
+Socket disconnected: b-dk-kCeYlyrwdtUAAAb
+Socket connected: aF8dPiU3EA6jHgDpAAAe
+Socket disconnected: aF8dPiU3EA6jHgDpAAAe
+Socket connected: zht0SHRg_kLeh3ccAAAh
+getProblems error: Error: read ENETUNREACH
+    at PromisePool.execute (/home/zoro/Documents/debugging_new/backend/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at getProblems (/home/zoro/Documents/debugging_new/backend/src/controllers/problemController.js:13:35)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13)
+    at authenticateToken (/home/zoro/Documents/debugging_new/backend/src/middleware/auth.js:21:5)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13)
+    at Route.dispatch (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:117:3)
+    at handle (/home/zoro/Documents/debugging_new/backend/node_modules/router/index.js:435:11)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17) {
+  code: 'ENETUNREACH',
+  errno: -101,
+  sql: undefined,
+  sqlState: undefined,
+  sqlMessage: undefined
+}
+getSubmissions error: Error: read ENETUNREACH
+    at PromisePool.execute (/home/zoro/Documents/debugging_new/backend/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at getSubmissions (/home/zoro/Documents/debugging_new/backend/src/controllers/submissionController.js:5:31)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13)
+    at requireAdmin (/home/zoro/Documents/debugging_new/backend/src/middleware/auth.js:31:3)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13)
+    at authenticateToken (/home/zoro/Documents/debugging_new/backend/src/middleware/auth.js:21:5)
+    at Layer.handleRequest (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/layer.js:152:17)
+    at next (/home/zoro/Documents/debugging_new/backend/node_modules/router/lib/route.js:157:13) {
+  code: 'ENETUNREACH',
+  errno: -101,
+  sql: undefined,
+  sqlState: undefined,
+  sqlMessage: undefined
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+[dotenv@17.3.1] injecting env (9) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+node:internal/modules/cjs/loader:1137
+  throw err;
+  ^
+
+Error: Cannot find module 'compression'
+Require stack:
+- /home/zoro/Documents/debugging_new/backend/src/app.js
+- /home/zoro/Documents/debugging_new/backend/src/server.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1134:15)
+    at Module._load (node:internal/modules/cjs/loader:975:27)
+    at Module.require (node:internal/modules/cjs/loader:1225:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/home/zoro/Documents/debugging_new/backend/src/app.js:13:21)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at Module.load (node:internal/modules/cjs/loader:1197:32)
+    at Module._load (node:internal/modules/cjs/loader:1013:12)
+    at Module.require (node:internal/modules/cjs/loader:1225:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/zoro/Documents/debugging_new/backend/src/app.js',
+    '/home/zoro/Documents/debugging_new/backend/src/server.js'
+  ]
+}
+
+Node.js v18.19.1
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+[dotenv@17.3.1] injecting env (9) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+❌ Database init error: connect ETIMEDOUT
+node:events:495
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at start (/home/zoro/Documents/debugging_new/backend/src/server.js:41:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1838:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+Node.js v18.19.1
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+[dotenv@17.3.1] injecting env (9) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+[dotenv@17.3.1] injecting env (9) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+✅ Database schema verified
+🚀 Debug Arena backend running on http://localhost:5000
+📡 Socket.io ready
+Socket connected: x02MsthQKs_lOmXIAAAB
+Socket disconnected: x02MsthQKs_lOmXIAAAB
+[32m[nodemon] restarting child process[39m
+[32m[nodemon] starting `node src/server.js`[39m
+[dotenv@17.3.1] injecting env (9) from .env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Node.js[20417]: ../src/node.cc:701:void node::ResetStdio(): Assertion `!(err != 0) || (err == -1 && (*__errno_location ()) == 1)' failed.
+ 1: 0x7e6eb1e0633c node::Abort() [/lib/x86_64-linux-gnu/libnode.so.109]
+ 2: 0x7e6eb1e063cb  [/lib/x86_64-linux-gnu/libnode.so.109]
+ 3: 0x7e6eb1db88c6  [/lib/x86_64-linux-gnu/libnode.so.109]
+ 4: 0x7e6eb1047a76  [/lib/x86_64-linux-gnu/libc.so.6]
+ 5: 0x7e6eb1047bbe  [/lib/x86_64-linux-gnu/libc.so.6]
+ 6: 0x7e6eb1d2dc5d node::DefaultProcessExitHandler(node::Environment*, int) [/lib/x86_64-linux-gnu/libnode.so.109]
+ 7: 0x7e6eb1d7e729 node::Environment::Exit(int) [/lib/x86_64-linux-gnu/libnode.so.109]
+ 8: 0x7e6eb225138e v8::internal::FunctionCallbackArguments::Call(v8::internal::CallHandlerInfo) [/lib/x86_64-linux-gnu/libnode.so.109]
+ 9: 0x7e6eb22519b1  [/lib/x86_64-linux-gnu/libnode.so.109]
+10: 0x7e6eb22522af v8::internal::Builtin_HandleApiCall(int, unsigned long*, v8::internal::Isolate*) [/lib/x86_64-linux-gnu/libnode.so.109]
+11: 0x7e6eb20fc2f9  [/lib/x86_64-linux-gnu/libnode.so.109]

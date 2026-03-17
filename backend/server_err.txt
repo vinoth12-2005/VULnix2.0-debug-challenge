@@ -1,0 +1,32 @@
+[dotenv@17.3.1] injecting env (9) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+✅ Database schema verified
+🚀 Debug Arena backend running on http://localhost:5000
+📡 Socket.io ready
+Socket connected: lyNM0cJrjOrBP392AAAC
+Socket disconnected: lyNM0cJrjOrBP392AAAC
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+Socket connected: WjjcyeCLjhXaQr3QAAAF
+Socket disconnected: WjjcyeCLjhXaQr3QAAAF
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+Socket connected: fjt3bwqHRPsQv4JsAAAI
+Socket disconnected: fjt3bwqHRPsQv4JsAAAI
+Socket connected: bWhDCy5SgrMcshqbAAAL
+Socket disconnected: bWhDCy5SgrMcshqbAAAL
+Socket connected: udJncWHueJoiI6lGAAAO
+Socket disconnected: udJncWHueJoiI6lGAAAO
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+getEvents error: Incorrect arguments to mysqld_stmt_execute
+Socket connected: me0NYBo5lZnBTduTAAAR
+Socket connected: -xtp1_xol9txeMTRAAAT
+Socket disconnected: -xtp1_xol9txeMTRAAAT
+Socket connected: BnGVp-LDhszJyt4oAAAV
+Socket disconnected: BnGVp-LDhszJyt4oAAAV
+Socket connected: jFiYiGve85LxpkydAAAX

@@ -6,8 +6,8 @@
 
 @layer base {
   body {
-    @apply bg-obsidian text-gray-300 font-body antialiased;
-    background-image: radial-gradient(circle at top center, rgba(40,30,20,0.3) 0%, rgba(10,10,12,1) 100%);
+    @apply bg-obsidian text-gray-100 font-body antialiased;
+    background-image: radial-gradient(circle at top center, rgba(120,80,40,0.5) 0%, rgba(10,10,12,1) 100%);
     background-attachment: fixed;
   }
 
@@ -18,16 +18,19 @@
 
 @layer utilities {
   .text-glow-gold {
-    text-shadow: 0 0 8px rgba(212, 175, 55, 0.6), 0 0 16px rgba(212, 175, 55, 0.3), 0 0 32px rgba(212, 175, 55, 0.15);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.3);
   }
   .text-glow-red {
-    text-shadow: 0 0 8px rgba(139, 0, 0, 0.8), 0 0 16px rgba(139, 0, 0, 0.4), 0 0 32px rgba(139, 0, 0, 0.2);
+    text-shadow: 0 0 12px rgba(255, 42, 42, 1), 0 0 24px rgba(255, 42, 42, 0.7), 0 0 48px rgba(255, 42, 42, 0.4);
+  }
+  .text-glow-jade {
+    text-shadow: 0 0 10px rgba(0, 255, 127, 0.9), 0 0 20px rgba(0, 255, 127, 0.6), 0 0 40px rgba(0, 255, 127, 0.3);
   }
   .border-glow-gold {
-    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3) inset, 0 0 8px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5) inset, 0 0 15px rgba(255, 215, 0, 0.5);
   }
   .border-glow-red {
-    box-shadow: 0 0 8px rgba(139, 0, 0, 0.4) inset, 0 0 8px rgba(139, 0, 0, 0.4);
+    box-shadow: 0 0 15px rgba(255, 42, 42, 0.6) inset, 0 0 15px rgba(255, 42, 42, 0.6);
   }
 }
 
@@ -411,6 +414,7 @@
 /* Magnetic Hover */
 .magnetic-btn {
   transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
 }
 .magnetic-btn:hover {
   transform: scale(1.05) translateY(-2px);
@@ -428,9 +432,16 @@
 .tilt-card {
   transition: transform 0.5s ease-out;
   transform-style: preserve-3d;
+  will-change: transform;
 }
 .tilt-card:hover {
   transform: scale(1.02) rotateX(2deg) rotateY(2deg);
+}
+
+/* Optimize Rendering */
+section, .card-container, .modal-content {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
 }
 
 /* ========== PERFORMANCE OPTIMIZATIONS ========== */
@@ -455,8 +466,32 @@
   /* Reduce glow intensity on mobile to save paint performance */
   .text-glow-gold,
   .text-glow-red,
+  .text-glow-jade,
+  .border-glow-gold,
+  .border-glow-red,
   .hover-glow-gold:hover {
     text-shadow: none !important;
     box-shadow: none !important;
+    filter: none !important;
+  }
+
+  /* Simplify background to reduce overdraw */
+  body {
+    background: #0a0a0c !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
   }
 }

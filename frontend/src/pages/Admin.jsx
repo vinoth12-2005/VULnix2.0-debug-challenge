@@ -70,6 +70,14 @@ export default function Admin() {
   const [previewSource, setPreviewSource] = useState(null); // 'file' | 'sheet'
   const [pendingFile, setPendingFile] = useState(null);
 
+  // ── Anti-cheat / Sentinel state ─────────────────────────────────────────
+  const [sentinelSummary, setSentinelSummary] = useState(null); // { teams, global_event_counts }
+  const [sentinelEvents, setSentinelEvents] = useState([]);
+  const [sentinelLoading, setSentinelLoading] = useState(false);
+  const [sentinelEventFilter, setSentinelEventFilter] = useState('');
+  const [drilldownTeam, setDrilldownTeam] = useState(null); // { team, timeline }
+  const [drilldownLoading, setDrilldownLoading] = useState(false);
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -90,9 +98,42 @@ export default function Admin() {
     }
   };
 
+  const fetchSentinel = async () => {
+    setSentinelLoading(true);
+    try {
+      const [sumRes, evRes] = await Promise.all([
+        api.get('/anticheat/summary'),
+        api.get('/anticheat/events?limit=100'),
+      ]);
+      setSentinelSummary(sumRes.data);
+      setSentinelEvents(evRes.data);
+    } catch (err) {
+      setError('Failed to summon sentinel data.');
+    } finally {
+      setSentinelLoading(false);
+    }
+  };
+
+  const openDrilldown = async (teamId) => {
+    setDrilldownLoading(true);
+    setDrilldownTeam({ team: { id: teamId }, timeline: [] });
+    try {
+      const res = await api.get(`/anticheat/timeline/${teamId}`);
+      setDrilldownTeam(res.data);
+    } catch (err) {
+      setError('Failed to load team timeline.');
+    } finally {
+      setDrilldownLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'sentinel') fetchSentinel();
+  }, [activeTab]);
 
   const handleCreateTeam = async () => {
     try {
@@ -368,36 +409,36 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-obsidian p-6">
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-800 pb-6">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-600 pb-6">
         <div>
-          <h1 className="text-3xl font-myth font-bold text-gray-200 flex items-center gap-3">
-            <span className="text-myth-gold">VULNI</span><span className="text-myth-red">X</span> <span className="text-myth-gold/60 text-xl">ADMIN</span>
+          <h1 className="text-3xl font-myth font-bold text-white flex items-center gap-3">
+            <span className="text-myth-gold text-glow-gold">VULNI</span><span className="text-myth-red text-glow-red">X</span> <span className="text-myth-gold text-xl">ADMIN</span>
           </h1>
-          <p className="text-gray-500 font-body text-[10px] md:text-xs uppercase mt-2">Authority Level: Jade Emperor // Divine Decree Confirmed</p>
+          <p className="text-gray-300 font-body text-[10px] md:text-sm uppercase mt-2">Authority Level: Jade Emperor // Divine Decree Confirmed</p>
         </div>
         <div className="flex gap-4 w-full md:w-auto">
-          <button onClick={() => navigate('/dashboard')} className="flex-1 md:flex-none px-4 py-2 border border-gray-600 text-gray-400 hover:text-white rounded font-body uppercase text-xs">Mortal Realm</button>
-          <button onClick={logout} className="flex-1 md:flex-none px-4 py-2 bg-myth-red/20 border border-myth-red text-myth-red rounded font-body uppercase text-xs shadow-[0_0_10px_rgba(139,0,0,0.2)] hover:bg-myth-red hover:text-obsidian transition-colors">Abdicate</button>
+          <button onClick={() => navigate('/dashboard')} className="flex-1 md:flex-none px-4 py-2 border border-gray-500 text-gray-200 hover:text-white rounded font-body uppercase text-xs">Mortal Realm</button>
+          <button onClick={logout} className="flex-1 md:flex-none px-4 py-2 bg-myth-red/30 border border-myth-red text-myth-red rounded font-body uppercase text-xs shadow-[0_0_15px_rgba(255,42,42,0.3)] hover:bg-myth-red hover:text-obsidian transition-colors">Abdicate</button>
         </div>
       </header>
 
-      {error && <div className="bg-myth-red/20 border border-myth-red text-myth-red p-3 rounded mb-6 font-body text-sm font-bold flex gap-2"><span>⚔️</span> {error}</div>}
-      {success && <div className="bg-myth-jade/20 border border-myth-jade text-myth-jade p-3 rounded mb-6 font-body text-sm font-bold flex gap-2"><span>✨</span> {success}</div>}
+      {error && <div className="bg-myth-red/30 border border-myth-red text-myth-red p-3 rounded mb-6 font-body text-sm font-bold flex gap-2"><span>⚔️</span> {error}</div>}
+      {success && <div className="bg-myth-jade/30 border border-myth-jade text-myth-jade p-3 rounded mb-6 font-body text-sm font-bold flex gap-2"><span>✨</span> {success}</div>}
 
-      <div className="flex border-b border-gray-800 mb-6 flex-wrap gap-y-2">
-        {['trials', 'deities', 'deeds', 'sovereignty'].map((tab, idx) => {
-          const actualTab = ['problems', 'teams', 'submissions', 'sovereignty'][idx];
+      <div className="flex border-b border-gray-600 mb-6 flex-wrap gap-y-2">
+        {['trials', 'deities', 'deeds', 'sentinel', 'sovereignty'].map((tab, idx) => {
+          const actualTab = ['problems', 'teams', 'submissions', 'sentinel', 'sovereignty'][idx];
           return (
             <button
               key={actualTab}
               onClick={() => setActiveTab(actualTab)}
               className={`flex-1 md:flex-none px-4 md:px-6 py-3 font-myth uppercase font-bold text-xs md:text-sm tracking-widest transition-colors ${
                 activeTab === actualTab 
-                  ? 'text-myth-red border-b-2 border-myth-red text-glow-red' 
-                  : 'text-gray-500 hover:text-myth-gold'
+                  ? 'text-myth-red border-b-2 border-myth-red text-glow-red scale-105' 
+                  : 'text-gray-300 hover:text-myth-gold'
               }`}
             >
-              {tab}
+              {tab === 'sentinel' ? '🛡 Sentinel' : tab}
             </button>
           )
         })}
@@ -406,8 +447,8 @@ export default function Admin() {
             onClick={handleToggleLeaderboard}
             className={`px-4 py-2 text-xs font-bold uppercase rounded border transition-colors ${
               leaderboardReleased 
-                ? 'bg-myth-jade/20 border-myth-jade text-myth-jade hover:bg-myth-jade hover:text-obsidian shadow-[0_0_10px_rgba(0,255,127,0.2)]'
-                : 'bg-myth-red/20 border-myth-red text-myth-red hover:bg-myth-red hover:text-obsidian shadow-[0_0_10px_rgba(139,0,0,0.2)]'
+                ? 'bg-myth-jade/30 border-myth-jade text-myth-jade hover:bg-myth-jade hover:text-obsidian shadow-[0_0_15px_rgba(0,255,127,0.3)]'
+                : 'bg-myth-red/30 border-myth-red text-myth-red hover:bg-myth-red hover:text-obsidian shadow-[0_0_15px_rgba(255,42,42,0.3)]'
             }`}
           >
             {leaderboardReleased ? '👁️ Leaderboard: Revealed' : '🔒 Leaderboard: Hidden'}
@@ -494,6 +535,7 @@ export default function Admin() {
                   >
                     <option value="python">Python</option>
                     <option value="c">C</option>
+                    <option value="cpp">C++</option>
                     <option value="java">Java</option>
                   </select>
                 </div>
@@ -666,6 +708,7 @@ export default function Admin() {
                   >
                     <option value="python">Python</option>
                     <option value="c">C</option>
+                    <option value="cpp">C++</option>
                     <option value="java">Java</option>
                   </select>
                 </div>
@@ -794,19 +837,19 @@ export default function Admin() {
             </div>
           )}
 
-          <div className="bg-myth-dark border border-gray-800 rounded overflow-hidden">
-            <h2 className="text-gray-200 font-myth tracking-widest uppercase p-6 border-b border-gray-800 text-xl border-l-4 border-l-myth-gold">Registry of Trials ({problems.length})</h2>
+          <div className="bg-myth-dark border border-gray-600 rounded overflow-hidden">
+            <h2 className="text-white font-myth tracking-widest uppercase p-6 border-b border-gray-600 text-xl border-l-4 border-l-myth-gold">Registry of Trials ({problems.length})</h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse font-body text-xs md:text-sm text-gray-300 min-w-[800px]">
-                <thead className="bg-black/50 text-gray-400 uppercase text-xs">
+              <table className="w-full text-left border-collapse font-body text-xs md:text-sm text-gray-100 min-w-[800px]">
+                <thead className="bg-black/50 text-gray-200 uppercase text-xs">
                   <tr>
-                    <th className="p-4 border-b border-gray-800">Scroll ID</th>
-                    <th className="p-4 border-b border-gray-800 text-left">Location</th>
-                    <th className="p-4 border-b border-gray-800">Severity</th>
-                    <th className="p-4 border-b border-gray-800">Tongue</th>
-                    <th className="p-4 border-b border-gray-800">Title</th>
-                    <th className="p-4 border-b border-gray-800">Time Limit</th>
-                    <th className="p-4 border-b border-gray-800">Judgement</th>
+                    <th className="p-4 border-b border-gray-600">Scroll ID</th>
+                    <th className="p-4 border-b border-gray-600 text-left">Location</th>
+                    <th className="p-4 border-b border-gray-600">Severity</th>
+                    <th className="p-4 border-b border-gray-600">Tongue</th>
+                    <th className="p-4 border-b border-gray-600">Title</th>
+                    <th className="p-4 border-b border-gray-600">Time Limit</th>
+                    <th className="p-4 border-b border-gray-600">Judgement</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1020,21 +1063,21 @@ export default function Admin() {
       )}
 
       {activeTab === 'submissions' && (
-        <div className="bg-myth-dark border border-gray-800 rounded overflow-x-auto">
-          <table className="w-full text-left border-collapse font-body text-xs md:text-sm text-gray-300 min-w-[800px]">
-            <thead className="bg-black/50 text-gray-400 uppercase text-xs font-myth tracking-wider">
-              <tr>
-                <th className="p-4 border-b border-gray-800">Epoch</th>
-                <th className="p-4 border-b border-gray-800">Deity</th>
-                <th className="p-4 border-b border-gray-800">Trial</th>
-                <th className="p-4 border-b border-gray-800">Tongue</th>
-                <th className="p-4 border-b border-gray-800">Outcome</th>
-                <th className="p-4 border-b border-gray-800">Merit Earned</th>
-              </tr>
-            </thead>
-            <tbody>
-              {submissions.map(s => (
-                <tr key={s.id} className="border-b border-gray-800 hover:bg-white/5 transition-colors">
+          <div className="bg-myth-dark border border-gray-600 rounded overflow-x-auto">
+            <table className="w-full text-left border-collapse font-body text-xs md:text-sm text-gray-100 min-w-[800px]">
+              <thead className="bg-black/50 text-gray-200 uppercase text-xs font-myth tracking-wider">
+                <tr>
+                  <th className="p-4 border-b border-gray-600">Epoch</th>
+                  <th className="p-4 border-b border-gray-600">Deity</th>
+                  <th className="p-4 border-b border-gray-600">Trial</th>
+                  <th className="p-4 border-b border-gray-600">Tongue</th>
+                  <th className="p-4 border-b border-gray-600">Outcome</th>
+                  <th className="p-4 border-b border-gray-600">Merit Earned</th>
+                </tr>
+              </thead>
+              <tbody>
+                {submissions.map(s => (
+                  <tr key={s.id} className="border-b border-gray-600 hover:bg-white/5 transition-colors">
                   <td className="p-4 text-gray-500 text-xs">{new Date(s.submitted_at).toLocaleTimeString()}</td>
                   <td className="p-4 font-bold text-myth-gold">{s.team_name}</td>
                   <td className="p-4 truncate max-w-[150px] text-gray-300">{s.title}</td>
@@ -1086,6 +1129,249 @@ export default function Admin() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {activeTab === 'sentinel' && (
+        <div className="space-y-8 animate-stagger-in">
+          {/* Global summary cards */}
+          {sentinelSummary && (() => {
+            const gc = {};
+            (sentinelSummary.global_event_counts || []).forEach(r => { gc[r.event_type] = r.total; });
+            return (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: 'Tab Switches',    icon: '👁', val: gc['TAB_BLUR'] || 0,           color: 'myth-gold' },
+                  { label: 'Copy Events',     icon: '📋', val: gc['COPY'] || 0,               color: 'myth-jade' },
+                  { label: 'Paste Events',    icon: '📥', val: (gc['PASTE'] || 0) + (gc['MASSIVE_PASTE'] || 0), color: 'orange-500' },
+                  { label: 'Multi-Login Kicks', icon: '🔀', val: gc['MULTI_LOGIN_KICK'] || 0, color: 'myth-red' },
+                ].map(({ label, icon, val, color }) => (
+                  <div key={label} className={`bg-myth-dark border border-gray-600 rounded-lg p-5 flex flex-col gap-2 hover:border-${color}/60 transition-colors shadow-lg`}>
+                    <div className="text-2xl">{icon}</div>
+                    <div className={`text-3xl font-black text-${color} font-myth text-glow-${color === 'myth-jade' ? 'jade' : color === 'myth-gold' ? 'gold' : 'red'}`}>{val}</div>
+                    <div className="text-gray-300 text-xs uppercase font-body tracking-widest font-bold">{label}</div>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
+
+          {/* Suspicion score table */}
+          <div className="bg-myth-dark border border-gray-600 rounded overflow-hidden shadow-xl">
+            <div className="p-5 border-b border-gray-600 flex justify-between items-center">
+              <h2 className="text-myth-red font-myth tracking-widest uppercase text-xl border-l-4 border-myth-red pl-4 text-glow-red">Suspicion Analysis</h2>
+              <button onClick={fetchSentinel} className="text-xs text-gray-400 hover:text-myth-gold font-body uppercase font-bold">↻ Refresh</button>
+            </div>
+            {sentinelLoading ? (
+              <div className="p-8 text-center text-myth-gold font-myth animate-pulse">Loading sentinel data...</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse font-body text-xs md:text-sm text-gray-100 min-w-[700px]">
+                  <thead className="bg-black/50 text-gray-200 uppercase text-xs">
+                    <tr>
+                      <th className="p-4 border-b border-gray-800">Team</th>
+                      <th className="p-4 border-b border-gray-800">Risk Level</th>
+                      <th className="p-4 border-b border-gray-800">Suspicion Score</th>
+                      <th className="p-4 border-b border-gray-800">Primary Infractions</th>
+                      <th className="p-4 border-b border-gray-800 text-center">Indicators</th>
+                      <th className="p-4 border-b border-gray-800">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(sentinelSummary?.teams || []).map(t => {
+                      const riskBadge = t.risk_level === 'high'
+                        ? 'bg-myth-red/30 border-myth-red text-myth-red shadow-glow-red'
+                        : t.risk_level === 'medium'
+                        ? 'bg-yellow-900/30 border-yellow-600 text-yellow-400'
+                        : 'bg-myth-jade/10 border-myth-jade text-myth-jade';
+                      const riskEmoji = t.risk_level === 'high' ? '🚨' : t.risk_level === 'medium' ? '⚠️' : '✅';
+                      
+                      const topEvents = Object.entries(t.events)
+                        .filter(([_, count]) => count > 0)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 2)
+                        .map(([type, count]) => `${type.replace(/_/g, ' ')} (${count})`);
+
+                      return (
+                        <tr key={t.team_id} className={`border-b border-gray-800 hover:bg-white/5 transition-colors ${t.risk_level === 'high' ? 'bg-myth-red/5' : ''}`}>
+                          <td className="p-4 font-bold text-white text-base">{t.team_name}</td>
+                          <td className="p-4">
+                            <span className={`px-2 py-1 rounded border text-[10px] font-black uppercase tracking-widest ${riskBadge}`}>
+                              {riskEmoji} {t.risk_level}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-24 h-2 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
+                                <div
+                                  className="h-full rounded-full transition-all"
+                                  style={{
+                                    width: `${t.suspicion_score}%`,
+                                    background: t.risk_level === 'high' ? '#ff2a2a' : t.risk_level === 'medium' ? '#ffd700' : '#00ff88'
+                                  }}
+                                />
+                              </div>
+                              <span className={`font-black text-sm ${t.risk_level === 'high' ? 'text-myth-red' : 'text-gray-100'}`}>{t.suspicion_score}</span>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex flex-col gap-1">
+                              {topEvents.length > 0 ? topEvents.map((ev, idx) => (
+                                <span key={idx} className="text-[10px] text-gray-300 font-mono uppercase bg-black/40 px-2 py-0.5 rounded border border-gray-700 w-fit">{ev}</span>
+                              )) : <span className="text-gray-600 italic text-[10px]">Purity Observed</span>}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex justify-center gap-4 text-gray-300 text-xs">
+                              <span title="Tab Switches">👁 {t.events['TAB_BLUR'] || 0}</span>
+                              <span title="Pastes">📥 {(t.events['PASTE'] || 0) + (t.events['MASSIVE_PASTE'] || 0)}</span>
+                              <span title="Fast Solves">⚡ {t.events['FAST_SOLVE'] || 0}</span>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <button
+                              onClick={() => openDrilldown(t.team_id)}
+                              className="px-3 py-1 border border-myth-gold text-myth-gold text-[10px] font-bold uppercase rounded hover:bg-myth-gold hover:text-obsidian transition-all"
+                            >
+                              Timeline
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {(!sentinelSummary?.teams || sentinelSummary.teams.length === 0) && (
+                      <tr><td colSpan={8} className="p-8 text-center text-gray-600 italic font-body">No anti-cheat events recorded yet.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Recent Event Feed */}
+          <div className="bg-myth-dark border border-gray-800 rounded overflow-hidden">
+            <div className="p-5 border-b border-gray-800 flex flex-wrap gap-4 items-center justify-between">
+              <h2 className="text-myth-gold font-myth tracking-widest uppercase text-lg">Recent Events</h2>
+              <select
+                value={sentinelEventFilter}
+                onChange={e => setSentinelEventFilter(e.target.value)}
+                className="bg-obsidian border border-gray-700 rounded px-3 py-1.5 text-gray-300 text-xs font-body focus:border-myth-gold outline-none"
+              >
+                <option value="">All Types</option>
+                {['TAB_BLUR','TAB_FOCUS','COPY','PASTE','MASSIVE_PASTE','FULLSCREEN_EXIT','IDLE_TIMEOUT','MULTI_LOGIN_KICK','FAST_SOLVE','RIGHT_CLICK'].map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse font-body text-xs text-gray-300 min-w-[600px]">
+                <thead className="bg-black/50 text-gray-400 uppercase">
+                  <tr>
+                    <th className="p-3 border-b border-gray-800">Time</th>
+                    <th className="p-3 border-b border-gray-800">Team</th>
+                    <th className="p-3 border-b border-gray-800">Event</th>
+                    <th className="p-3 border-b border-gray-800">Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sentinelEvents
+                    .filter(e => !sentinelEventFilter || e.event_type === sentinelEventFilter)
+                    .slice(0, 60)
+                    .map(e => {
+                      const eventColor = e.event_type === 'MULTI_LOGIN_KICK' ? 'text-myth-red'
+                        : e.event_type.includes('PASTE') ? 'text-orange-400'
+                        : e.event_type === 'TAB_BLUR' ? 'text-yellow-400'
+                        : e.event_type === 'FAST_SOLVE' ? 'text-myth-red'
+                        : 'text-gray-400';
+
+                      let meta = '';
+                      try { meta = JSON.stringify(typeof e.metadata === 'string' ? JSON.parse(e.metadata) : e.metadata); } catch(_) {}
+
+                      return (
+                        <tr key={e.id} className="border-b border-gray-800/50 hover:bg-white/5">
+                          <td className="p-3 text-gray-600">{new Date(e.created_at).toLocaleTimeString()}</td>
+                          <td className="p-3 font-bold text-myth-gold">{e.team_name}</td>
+                          <td className="p-3">
+                            <span className={`font-bold uppercase text-[10px] ${eventColor}`}>{e.event_type}</span>
+                          </td>
+                          <td className="p-3 text-gray-500 font-mono text-[10px] max-w-[200px] truncate">{meta}</td>
+                        </tr>
+                      );
+                    })
+                  }
+                  {sentinelEvents.length === 0 && (
+                    <tr><td colSpan={4} className="p-8 text-center text-gray-600 italic">No events recorded yet.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Team drill-down timeline modal */}
+      {drilldownTeam && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-myth-dark border border-myth-gold/30 rounded-xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden animate-stagger-in">
+            <div className="p-5 border-b border-gray-800 flex justify-between items-center">
+              <div>
+                <h3 className="text-myth-gold font-myth tracking-widest uppercase text-lg">
+                  🛡 {drilldownTeam.team?.team_name || 'Team'} — Timeline
+                </h3>
+                <p className="text-gray-600 text-xs font-body mt-1">Chronological history of events and submissions</p>
+              </div>
+              <button onClick={() => setDrilldownTeam(null)} className="text-gray-500 hover:text-white text-2xl leading-none">✕</button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5">
+              {drilldownLoading ? (
+                <div className="text-center text-myth-gold font-myth animate-pulse py-10">Loading timeline...</div>
+              ) : (
+                <div className="space-y-2">
+                  {(drilldownTeam.timeline || []).map((item, i) => {
+                    const isSubmission = item.source === 'submission';
+                    let meta = {};
+                    try { meta = typeof item.metadata === 'string' ? JSON.parse(item.metadata) : item.metadata || {}; } catch(_) {}
+
+                    return (
+                      <div key={i} className={`flex gap-4 items-start p-3 rounded-lg border ${
+                        isSubmission
+                          ? 'border-myth-gold/20 bg-myth-gold/5'
+                          : item.label?.includes('MULTI_LOGIN') ? 'border-myth-red/40 bg-myth-red/10'
+                          : 'border-gray-800 bg-black/30'
+                      }`}>
+                        <div className="text-xl flex-shrink-0">
+                          {isSubmission ? '📝' : item.label === 'MULTI_LOGIN_KICK' ? '🔀' : item.label === 'TAB_BLUR' ? '👁' : item.label?.includes('PASTE') ? '📥' : '⚡'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`font-bold text-xs uppercase font-myth ${
+                              isSubmission ? 'text-myth-gold' : 'text-gray-300'
+                            }`}>{item.label}</span>
+                            {meta.result && (
+                              <span className={`text-[9px] px-1.5 py-0.5 rounded border font-bold uppercase ${
+                                meta.result === 'correct' ? 'text-myth-jade border-myth-jade' : 'text-myth-red border-myth-red'
+                              }`}>{meta.result}</span>
+                            )}
+                          </div>
+                          {Object.keys(meta).length > 0 && (
+                            <p className="text-gray-600 text-[10px] font-mono truncate">
+                              {Object.entries(meta).map(([k,v]) => `${k}: ${v}`).join(' · ')}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-gray-600 text-[10px] font-mono flex-shrink-0">
+                          {new Date(item.timestamp).toLocaleTimeString()}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {(!drilldownTeam.timeline || drilldownTeam.timeline.length === 0) && (
+                    <div className="text-center text-gray-600 italic py-10">No activity recorded for this team.</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
