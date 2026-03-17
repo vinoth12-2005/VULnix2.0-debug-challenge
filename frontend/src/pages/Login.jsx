@@ -84,13 +84,19 @@ export default function Login() {
       }
       navigate('/dashboard');
     } catch (err) {
-      console.error('Login detailed error:', err);
+      console.error('--- LOGIN DEBUG DATA ---');
+      console.error('Status:', err.response?.status);
+      console.error('Data:', err.response?.data);
+      console.error('Error Object:', err);
+      
       if (err.code === 'ECONNABORTED') {
         setError('Server is taking too long to respond. Trial timed out.');
       } else if (!err.response) {
-        setError('Network Error. Ensure VITE_API_URL is correct and the server is running.');
+        setError('Network Error: Cannot reach the backend. check Vercel Variables.');
+      } else if (typeof err.response.data === 'string' && err.response.data.includes('<!DOCTYPE html>')) {
+        setError('Critical: Server is Offline or Misconfigured (Vercel crashed).');
       } else {
-        setError(err.response?.data?.message || 'Divine connection failed. Server error.');
+        setError(err.response?.data?.message || 'Divine connection failed. Manual Intervention Required.');
       }
     } finally {
       setLoading(false);
