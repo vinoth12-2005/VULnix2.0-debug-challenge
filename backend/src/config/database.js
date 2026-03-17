@@ -1,24 +1,25 @@
 const mysql = require('mysql2/promise');
 
 // In cloud environments (Railway/Vercel), env vars are usually pre-injected.
-// Local dotenv is already loaded in server.js or api/index.js.
 require('dotenv').config(); 
 
-const isRemoteDB = !['localhost', '127.0.0.1', '::1'].includes(process.env.DB_HOST || 'localhost');
+// Railway provides both custom names and default MYSQLHOST names
+const host = process.env.MYSQLHOST || process.env.DB_HOST || 'localhost';
+const isRemoteDB = !['localhost', '127.0.0.1', '::1'].includes(host);
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT) || 3306,
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'root',
-  database: process.env.DB_NAME || 'railway',
+  host: host,
+  port: parseInt(process.env.MYSQLPORT || process.env.DB_PORT) || 3306,
+  user: process.env.MYSQLUSER || process.env.DB_USER || 'root',
+  password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || 'root',
+  database: process.env.MYSQLDATABASE || process.env.DB_NAME || 'railway',
   waitForConnections: true,
-  connectionLimit: 5,
+  connectionLimit: 10,
   queueLimit: 0,
-  connectTimeout: 10000,
+  connectTimeout: 15000,
   enableKeepAlive: true,
   keepAliveInitialDelay: 10000,
-  // Railway/cloud providers always need SSL — even in local dev when pointing at a remote host
+  // Railway requires SSL for remote connections
   ssl: isRemoteDB ? { rejectUnauthorized: false } : undefined,
 });
 
