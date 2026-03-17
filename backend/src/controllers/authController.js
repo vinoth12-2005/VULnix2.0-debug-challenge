@@ -66,7 +66,10 @@ const teamLogin = async (req, res) => {
     res.json({ token, team: { id: team.id, team_name: team.team_name }, role: 'team' });
   } catch (err) {
     console.error('Team login error:', err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      message: `System Failure: ${err.message}`, 
+      hint: 'Check Vercel environment variables and Railway database status.' 
+    });
   }
 };
 
@@ -101,7 +104,10 @@ const adminLogin = async (req, res) => {
     res.json({ token, admin: { id: admin.id, username: admin.username }, role: 'admin' });
   } catch (err) {
     console.error('Admin login error:', err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      message: `Admin System Failure: ${err.message}`, 
+      hint: 'Verify admin table exists and DB connection is active.' 
+    });
   }
 };
 
