@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS problems (
   chapter INT NOT NULL DEFAULT 1,
   round INT NOT NULL,
   difficulty ENUM('easy','medium','hard') NOT NULL,
-  language ENUM('python','java','c') NOT NULL,
+  language ENUM('python','java','c','cpp') NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   buggy_code TEXT NOT NULL,
@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS problems (
   points INT NOT NULL DEFAULT 10,
   hint TEXT,
   time_limit INT DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  problem_group_id VARCHAR(50) DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX (problem_group_id)
 );
 
 -- Submissions table
@@ -78,16 +80,25 @@ CREATE TABLE IF NOT EXISTS team_timers (
   FOREIGN KEY (problem_id) REFERENCES problems(id) ON DELETE CASCADE,
   UNIQUE KEY unique_team_problem (team_id, problem_id)
 );
+
 -- Anti-cheat events table
 CREATE TABLE IF NOT EXISTS anti_cheat_events (
   id INT AUTO_INCREMENT PRIMARY KEY,
   team_id INT NOT NULL,
-  session_id VARCHAR(255),
-  event_type VARCHAR(50) NOT NULL,
-  metadata JSON,
+  session_id VARCHAR(255) DEFAULT NULL,
+  event_type ENUM(
+    'TAB_BLUR','TAB_FOCUS','COPY','PASTE','MASSIVE_PASTE',
+    'FULLSCREEN_EXIT','IDLE_TIMEOUT','MULTI_LOGIN_KICK',
+    'FAST_SOLVE','RIGHT_CLICK'
+  ) NOT NULL,
+  metadata JSON DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+  FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
+  INDEX idx_team_id (team_id),
+  INDEX idx_event_type (event_type),
+  INDEX idx_created_at (created_at)
 );
 
 -- Seed initial setting if not exists
 INSERT IGNORE INTO settings (id, leaderboard_released) VALUES (1, false);
+

@@ -448,11 +448,15 @@ int main() {
     console.log(`✅ ${problems.length} problems seeded (Chapter 1: Easy, Chapter 2: Medium, Chapter 3: Hard)`);
 
     console.log('🎉 Database seeding complete!');
-    process.exit(0);
+    return true;
   } catch (err) {
     console.error('❌ Seeding error:', err);
-    process.exit(1);
+    throw err;
   }
 }
 
-seed();
+if (require.main === module) {
+  seed().then(() => process.exit(0)).catch(() => process.exit(1));
+}
+
+module.exports = { seed };
