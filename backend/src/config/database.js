@@ -38,4 +38,14 @@ if (connectionUri) {
   });
 }
 
+// Resiliency: Purge dead connections from the pool immediately on error
+pool.on('connection', (connection) => {
+  connection.on('error', (err) => {
+    if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET' || err.code === 'EPIPE') {
+      console.warn('⚠️ Database connection lost/reset. Purging connection from pool...');
+      connection.destroy();
+    }
+  });
+});
+
 module.exports = pool;
